@@ -1,4 +1,4 @@
-package implementingls;
+package implementing.ls;
 
 public class Main {
 	public static void main(String[] args) {

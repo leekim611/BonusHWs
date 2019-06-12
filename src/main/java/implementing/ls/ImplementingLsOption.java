@@ -1,4 +1,4 @@
-package implementingls;
+package implementing.ls;
 
 import java.io.File;
 import java.util.Arrays;
@@ -12,6 +12,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+import implementing.ls.exception.IncorrectPathException;
 public class ImplementingLsOption {
 
 	private String setPath;	// p, path
@@ -35,11 +36,19 @@ public class ImplementingLsOption {
 			// option 'p'
 			if (setPath == null) {
 				System.out.println("You don't provide path as the value of the option p");
-				System.out.println("Run in project directory\n");
+				System.out.println("Run in project directory");
 				setPath = System.getProperty("user.dir");
 			}
 			else {
-				System.out.println("You provided \"" + setPath + "\" as the value of the option p");
+				try {
+					System.out.println("You provided \"" + setPath + "\" as the value of the option p");
+					if (!new File(setPath).isDirectory()) {
+						throw new IncorrectPathException("\nThis is not directory or wrong path. Enter 'p' option again.");
+					}
+				} catch (IncorrectPathException e) {
+					System.out.println(e.getMessage());
+					return;
+				}
 			}
 			File file = new File(setPath);
 			String[] files = file.list();
@@ -70,6 +79,7 @@ public class ImplementingLsOption {
 			}
 			else {
 				int count = 0;
+				boolean defaultPrint = false;
 				System.out.println("File list:");
 				for (String fileName : files) {
 					System.out.print("\t" + fileName);
@@ -77,11 +87,14 @@ public class ImplementingLsOption {
 					if (count == 5) {
 						System.out.println();
 						count = 0;
+						defaultPrint = true;
 					}
 				}
-				System.out.println("\n[By default, five outputs per line.]");
+				if (defaultPrint) {
+					System.out.print("\n[By default, five outputs per line.]");
+				}
 				if (reverse) {
-					System.out.println("[You enter '-r'. So, Print out reverse order]");
+					System.out.println("\n[You enter '-r'. So, Print out reverse order]");
 				}
 			}
 			
@@ -111,7 +124,7 @@ public class ImplementingLsOption {
 		Options options = new Options();
 		
 		options.addOption(Option.builder("p").longOpt("path")
-				.desc("Set a path of a directory or a file to display")
+				.desc("Set a path of a directory to display [Only directory]")
 				.hasArg()
 				.argName("Path name to display")
 				.build());
