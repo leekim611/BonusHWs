@@ -83,7 +83,7 @@ public class ImplementingLsOption {
 				boolean defaultPrint = false;
 				System.out.println("File list:");
 				for (String fileName : files) {
-					System.out.print("\t" + fileName);
+					System.out.print("\t" + fileName + "\t");
 					count++;
 					if (count == 5) {
 						System.out.println();
